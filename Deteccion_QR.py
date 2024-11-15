@@ -6,7 +6,7 @@ import os  # Importa el módulo os para reiniciar el script
 import sys  # Importa sys para obtener el nombre del script
 
 # URL base del ESP32 donde se encuentra la cámara
-url_base = 'http://192.168.XX.XX/'  # Cambia esto según tu configuración de red
+url_base = 'http://192.168.XX.XX/'  # Cambia la IP según lo que el Serial Monitor de Arduino IDE arroje
 font = cv2.FONT_HERSHEY_PLAIN  # Define la fuente para el texto en la imagen
 cv2.namedWindow("Transmision del ESP32 CAM", cv2.WINDOW_AUTOSIZE)  # Crea una ventana para mostrar la transmisión en vivo
 
