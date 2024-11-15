@@ -220,7 +220,8 @@ void handleQrData() {
     // Actualizar los LEDs según el estado de emergencia
     if (emergencia) {
       digitalWrite(pinVerde, HIGH);  // Enciende el LED verde
-      digitalWrite(pinRojo, HIGH);   // Enciende el LED rojo digitalWrite(pinAmarillo, HIGH);   // Enciende el LED amarillo
+      digitalWrite(pinRojo, HIGH);   // Enciende el LED rojo 
+      digitalWrite(pinAmarillo, HIGH);   // Enciende el LED amarillo
     } else {
       digitalWrite(pinVerde, LOW); // Apaga el LED verde
       digitalWrite(pinRojo, LOW); // Apaga el LED rojo
