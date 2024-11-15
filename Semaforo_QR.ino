@@ -1,27 +1,22 @@
 #include <WebServer.h>  // Incluye la biblioteca para manejar el servidor web
 #include <WiFi.h>      // Incluye la biblioteca para manejar la conexión WiFi
 #include <esp32cam.h>  // Incluye la biblioteca para manejar la cámara ESP32
-
 // Credenciales de la red WiFi
 const char* WIFI_SSID = "TU RED";  // Nombre de la red WiFi
 const char* WIFI_PASS = "TU CLAVE";  // Contraseña de la red WiFi
-
 WebServer server(80);  // Crea un servidor web en el puerto 80
 
 // Configuración de la resolución de la cámara
 static auto hiRes = esp32cam::Resolution::find(800, 600);  // Busca una resolución de 800x600
-
 // Definición de pines para los LEDs
 int pinVerde = 15;    // Pin del LED verde (15)
 int pinAmarillo = 13; // Pin del LED amarillo (13)
 int pinRojo = 12;     // Pin del LED rojo (12)
 const int internalLedPin = 4; // Pin del LED integrado del ESP32-CAM
-
 String qrData = "";  // Variable para almacenar los datos del código QR
 bool emergencia = false;  // Bandera para indicar si hay una emergencia
 bool ledVerdeEncendido = false; // Bandera para el estado del LED verde
 bool semaforoDetenido = false; // Bandera para controlar el estado del semáforo
-
 // Enumeración para representar los estados del semáforo
 enum EstadoSemáforo { ROJO, AMARILLO, VERDE, EMERGENCIA };  // Define los estados del semáforo
 EstadoSemáforo estadoActual = ROJO;  // Estado inicial del semáforo
@@ -29,19 +24,16 @@ unsigned long tiempoInicioEstado = 0; // Variable para medir el tiempo en cada e
 
 void setup() {
   Serial.begin(115200);  // Inicializa la comunicación serie a 115200 bps
-
   // Configura los pines de los LEDs como salidas
   pinMode(pinVerde, OUTPUT);    // Configura el pin del LED verde como salida
   pinMode(pinAmarillo, OUTPUT); // Configura el pin del LED amarillo como salida
   pinMode(pinRojo, OUTPUT);     // Configura el pin del LED rojo como salida
   pinMode(internalLedPin, OUTPUT); // Configura el pin del LED integrado como salida
-
   // Inicializa los LEDs en el estado inicial
   digitalWrite(pinVerde, LOW);    // Asegúrate de que el LED verde esté apagado al inicio
   digitalWrite(pinAmarillo, HIGH); // Enciende el LED amarillo al inicio
   digitalWrite(pinRojo, LOW);      // Asegúrate de que el LED rojo esté apagado al inicio
   digitalWrite(internalLedPin, LOW); // Apaga el LED integrado del ESP32-CAM
-
   using namespace esp32cam;  // Utiliza el espacio de nombres esp32cam
   Config cfg;  // Crea una configuración para la cámara
   cfg.setPins(pins::AiThinker);  // Configura los pines para la cámara AiThinker
@@ -51,13 +43,11 @@ void setup() {
 
   bool ok = Camera.begin(cfg);  // Inicializa la cámara con la configuración
   Serial.println(ok ? "CAMERA OK" : "CAMERA FAIL");  // Imprime el estado de la cámara
-
   WiFi.begin(WIFI_SSID, WIFI_PASS);  // Inicia la conexión WiFi
   while (WiFi.status() != WL_CONNECTED) {  // Espera hasta que esté conectado
     delay(500);  // Espera medio segundo entre intentos
   }
-  Serial.print("http://");  // Imprime la dirección IP del servidor
-  Serial.println(WiFi.localIP());  // Imprime la dirección IP del ESP32
+  Serial.print("http://");  // Imprime la dirección IP del servidor Serial.println(WiFi.localIP());  // Imprime la IP local del ESP32
 
   // Define las rutas para manejar las solicitudes HTTP
   server.on("/", sendHtml);  // Ruta para servir la página HTML
@@ -67,10 +57,8 @@ void setup() {
   server.on("/off", handleOff);  // Ruta para apagar el LED verde
   server.begin();  // Inicia el servidor web
 }
-
 void loop() {
   server.handleClient();  // Maneja las solicitudes del cliente
-
   // Lógica del semáforo
   if (!semaforoDetenido) {  // Solo ejecuta la lógica del semáforo si no está detenido
     switch (estadoActual) {
@@ -83,7 +71,6 @@ void loop() {
           tiempoInicioEstado = millis();  // Reinicia el temporizador
         }
         break;
-
       case AMARILLO:  // Estado AMARILLO
         digitalWrite(pinRojo, LOW);   // Apaga el LED rojo
         digitalWrite(pinAmarillo, HIGH);  // Enciende el LED amarillo
@@ -93,7 +80,6 @@ void loop() {
           tiempoInicioEstado = millis();  // Reinicia el temporizador
         }
         break;
-
       case VERDE:  // Estado VERDE
         digitalWrite(pinRojo, LOW);   // Apaga el LED rojo
         digitalWrite(pinAmarillo, LOW);   // Apaga el LED amarillo
@@ -103,7 +89,6 @@ void loop() {
           tiempoInicioEstado = millis();  // Reinicia el temporizador
         }
         break;
-
       case EMERGENCIA:  // Estado de EMERGENCIA
         digitalWrite(pinVerde, HIGH);  // Enciende el LED verde
         digitalWrite(pinRojo, LOW);   // Apaga el LED rojo
@@ -145,18 +130,14 @@ void sendHtml() {
     #rectangulo { width: 100%; background-color: red; color: white; text-align: center; padding: 20px; font-size: 50px; font-weight: bold; }
     #semaforo { width: 120px; height: 280px; background-color: transparent; border-radius: 80px; padding: 10px; display: flex; flex-direction: column;
       align-items: center; justify-content: space-around; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); margin-top: 100px; border: 5px solid gray; position: relative; }
-    #semaforo .detalle { width: 100px; height: 250px; background-color: transparent; border-radius: 70px; border: 5px solid gray; padding: 10px; 
+    #semaforo .detalle { width: 100px; height: 250px; background-color: transparent; border-radius: 70px; border: 5px solid gray; padding: 10px;
       display: flex; flex-direction: column; align-items: center; justify-content: space-around; }
     .luz { width: 30px; height: 30px; border-radius: 50%; background-color: transparent; transition: background-color 0.3s; }
     .rojo { border: 5px solid red; }
     .amarillo { border: 5px solid yellow; }
     .verde { border: 5px solid green; }
-    
     #movimiento { color: white; position: absolute; width: 70px; height: 70px; font-size: 18px; font-weight: bold;
       cursor: pointer; border: none; border-radius: 50%; top: 240px; background-color: red; transition: top 0.3s ease, background-color 0.3s ease;}
-    
-    .off-position { top: 40px; background-color: red; }
-    .on-position { top: 190px; background-color: green; }
   </style>
 </head>
 <body>
@@ -174,7 +155,7 @@ void sendHtml() {
     async function toggleLight() {
       const button = document.getElementById('movimiento');
       const verde = document.getElementById('verde');
-      
+     
       if (button.innerText === 'OFF') {
         button.innerText = 'ON';
         button.style.top = "400px";  
@@ -193,7 +174,6 @@ void sendHtml() {
   )html";
   server.send(200, "text/html", response);
 }
-
 // Función que maneja la solicitud para encender el LED verde
 void handleOn() {
   ledVerdeEncendido = true;  // Establece la bandera para encender el LED verde
