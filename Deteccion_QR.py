@@ -12,7 +12,7 @@ import sys  # Importa sys para obtener el nombre del script
 #CONFIGURACION INICIAL DE LA IP, VENTANA Y VARIABLES
 #----------------------------------------
 # URL base del ESP32-CAM
-url_base = 'http://192.168.18.177/'  # Cambia esto según tu configuración de red
+url_base = 'http://192.168.X.X/'  # Cambia esto según tu configuración de red
 font = cv2.FONT_HERSHEY_PLAIN  # Define la fuente para el texto en la imagen
 cv2.namedWindow("Transmision del ESP32 CAM", cv2.WINDOW_AUTOSIZE)  # Crea una ventana para mostrar la transmisión en vivo
 
